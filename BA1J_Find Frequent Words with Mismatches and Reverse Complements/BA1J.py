@@ -5,54 +5,6 @@ with open("rosalind_ba1j.txt", "r") as file:
     input_k = int( input[1].split(" ")[0] ) #k, denoting the length of k-mers
     input_d = int( input[1].split(" ")[1] ) #d, denoting the maximum allowed Hamming distance
 
-def most_frequent_with_mismatch_and_complement( sequence, k, d ):
-
-    #Generate all possible k-mers
-    patterns = permute_dna("", k)
-
-    #Keep track of patterns and their matches in sequence
-    tracker = {} #Dictionary of ["pattern":matches] pairs
-
-    for pattern in patterns:
-        matches = FindApproximateMatches(sequence, pattern, d)
-        if len(matches) != 0: #Filters out patterns that have 0 matches
-            tracker[pattern] = len(matches)  #Adds [pattern, matches] to tracker
-
-    #Process tracker to sum frequencies of both pattern and reverse complement of pattern
-    sum_frequencies = {} #Dictionary of ["pattern": pattern matches + reverse complement matches]
-
-    #Updates sum_frequencies with ["pattern": pattern matches + reverse complement matches] pairs
-    for pattern in tracker.keys():
-        reverse_comp = ReverseComplement( pattern )
-        sum_frequencies[ pattern ] = tracker[ pattern ]
-        if reverse_comp in tracker:
-            sum_frequencies[ pattern ] += tracker[ reverse_comp ]
-
-    #Obtain most frequently occuring pattern
-    output = []
-    sum_frequencies = list( sum_frequencies.items() ) #Converts dictionary to list of key,value pairs
-    sum_frequencies.sort( key=lambda x: -x[1] ) #Sort key, value pairs in descending order of occurance
-    max_freq = sum_frequencies[0][1] #Highest frequency of occurance
-
-    #Adds patterns with the max_freq to output
-    for pattern, freq in sum_frequencies:
-        if freq == max_freq:
-            output.append( pattern )
-        else:
-            break
-
-    return output
-
-#Obtain most frequently matched matterns within sequence with hamming distance <= d
-patterns = most_frequent_with_mismatch_and_complement(input_sequence, input_k, input_d)
-
-#Format output to console
-print( (" ").join(patterns) )
-
-'''
-Helper Functions/Functions from other exercises
-'''
-
 #Generates all possible permuations of DNA that can be formed of len == length
 def permute_dna( perm, length ):
     if len( perm ) == length:
@@ -99,3 +51,47 @@ def ReverseComplement( sequence ):
         else:
             output += "G"
     return output[::-1] #Reverse output to obtain reverse complement to be from 5' -> 3'
+
+def most_frequent_with_mismatch_and_complement( sequence, k, d ):
+
+    #Generate all possible k-mers
+    patterns = permute_dna("", k)
+
+    #Keep track of patterns and their matches in sequence
+    tracker = {} #Dictionary of ["pattern":matches] pairs
+
+    for pattern in patterns:
+        matches = FindApproximateMatches(sequence, pattern, d)
+        if len(matches) != 0: #Filters out patterns that have 0 matches
+            tracker[pattern] = len(matches)  #Adds [pattern, matches] to tracker
+
+    #Process tracker to sum frequencies of both pattern and reverse complement of pattern
+    sum_frequencies = {} #Dictionary of ["pattern": pattern matches + reverse complement matches]
+
+    #Updates sum_frequencies with ["pattern": pattern matches + reverse complement matches] pairs
+    for pattern in tracker.keys():
+        reverse_comp = ReverseComplement( pattern )
+        sum_frequencies[ pattern ] = tracker[ pattern ]
+        if reverse_comp in tracker:
+            sum_frequencies[ pattern ] += tracker[ reverse_comp ]
+
+    #Obtain most frequently occuring pattern
+    output = []
+    sum_frequencies = list( sum_frequencies.items() ) #Converts dictionary to list of key,value pairs
+    sum_frequencies.sort( key=lambda x: -x[1] ) #Sort key, value pairs in descending order of occurance
+    max_freq = sum_frequencies[0][1] #Highest frequency of occurance
+
+    #Adds patterns with the max_freq to output
+    for pattern, freq in sum_frequencies:
+        if freq == max_freq:
+            output.append( pattern )
+        else:
+            break
+
+    return output
+
+#Obtain most frequently matched matterns within sequence with hamming distance <= d
+patterns = most_frequent_with_mismatch_and_complement(input_sequence, input_k, input_d)
+
+#Format output to console
+print( (" ").join(patterns) )

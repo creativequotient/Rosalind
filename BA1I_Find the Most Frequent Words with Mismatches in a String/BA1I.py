@@ -5,6 +5,39 @@ with open("rosalind_ba1i.txt", "r") as file:
     input_k = int( input[1].split(" ")[0] ) #k, denoting the length of k-mers
     input_d = int( input[1].split(" ")[1] ) #d, denoting the maximum allowed Hamming distance
 
+#Generates all possible permuations of DNA that can be formed of len == length
+def permute_dna( perm, length ):
+    if len( perm ) == length:
+        return [perm]
+
+    bases = ("A", "T", "G", "C") #Possible bases that can be added
+
+    permutations = [] #All permutations of DNA
+
+    for base in bases:
+        permutations += permute_dna( perm + base, length )
+
+    return permutations
+
+#Function from BA1G, used to compute Hamming distance between pattern and k-mer
+def HammingDistance( sequence_1, sequence_2 ):
+    distance = 0
+    for base_1, base_2 in zip( sequence_1, sequence_2 ): #base_1 and base_2 -> base at index i of sequences 1 and 2 respectively
+        if base_1 != base_2: #Compare both bases
+            distance += 1 #Increase distance by 1 if bases are not the same
+    return distance
+
+#Function from BA1H, used to compute locations within sequence where HDistance(pattern, substring) <= d
+def FindApproximateMatches( sequence, pattern, d ):
+    locations = [] #Locations where pattern matches k-mer with Hamming distance <= 3
+
+    for i in range(len(sequence) - len(pattern)):
+        subsequence = sequence[i:i + len(pattern)] #Subsequence to be compared to pattern
+        if HammingDistance( pattern, subsequence ) <= d: #Checks if Hamming distance <= d
+            locations.append( i ) #Update locations with i
+
+    return locations
+
 def most_frequent_with_mismatch( sequence, k, d ):
 
     #Generate all possible k-mers
@@ -42,39 +75,3 @@ for i, pattern in enumerate(patterns):
         print( str(pattern), end="" )
     else:
         print( " " + str(pattern), end="" )
-
-'''
-Helper Functions/Functions from other exercises
-'''
-#Generates all possible permuations of DNA that can be formed of len == length
-def permute_dna( perm, length ):
-    if len( perm ) == length:
-        return [perm]
-
-    bases = ("A", "T", "G", "C") #Possible bases that can be added
-
-    permutations = [] #All permutations of DNA
-
-    for base in bases:
-        permutations += permute_dna( perm + base, length )
-
-    return permutations
-
-#Function from BA1G, used to compute Hamming distance between pattern and k-mer
-def HammingDistance( sequence_1, sequence_2 ):
-    distance = 0
-    for base_1, base_2 in zip( sequence_1, sequence_2 ): #base_1 and base_2 -> base at index i of sequences 1 and 2 respectively
-        if base_1 != base_2: #Compare both bases
-            distance += 1 #Increase distance by 1 if bases are not the same
-    return distance
-
-#Function from BA1H, used to compute locations within sequence where HDistance(pattern, substring) <= d
-def FindApproximateMatches( sequence, pattern, d ):
-    locations = [] #Locations where pattern matches k-mer with Hamming distance <= 3
-
-    for i in range(len(sequence) - len(pattern)):
-        subsequence = sequence[i:i + len(pattern)] #Subsequence to be compared to pattern
-        if HammingDistance( pattern, subsequence ) <= d: #Checks if Hamming distance <= d
-            locations.append( i ) #Update locations with i
-
-    return locations
