@@ -1,4 +1,6 @@
 def findComplementary(DNA_sequence):
+
+    # Define helper function to find complementary sequence
     def __complement(nucleotide):
         nucleotides = {
             "A":"T",
@@ -8,6 +10,7 @@ def findComplementary(DNA_sequence):
         }
         return nucleotides[nucleotide]
 
+    # Find complementary sequence and then reverse sequence (to orientate sequence from 5' -> 3')
     return "".join(reversed(list(map(__complement, DNA_sequence))))
 
 if __name__ == "__main__":
