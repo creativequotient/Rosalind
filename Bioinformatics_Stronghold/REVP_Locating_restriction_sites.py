@@ -13,10 +13,7 @@ def locateRestrictionSites(sequence, min, max):
 
             # Putative RE site
             putativeSeq = sequence[i:i+n]
-
-            if n == 6:
-                print("{0} {1} {2}".format(i, putativeSeq, n))
-
+            
             # Check putative sequence == its complemenary sequence, if true:
             # site is palindromic and hence, an RE site
             if putativeSeq == complementary(putativeSeq):
