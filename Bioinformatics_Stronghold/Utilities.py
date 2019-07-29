@@ -1,2 +1,5 @@
 from GC_Computing_GC_content import fastaDict
 from REVC_Complementing_a_strand_of_DNA import findComplementary
+from PROT_Translating_RNA_into_Protein import translateRNA
+from RNA_Transcribing_DNA_into_RNA import transcribeDNAtoRNA
+from REVC_Complementing_a_strand_of_DNA import findComplementary
